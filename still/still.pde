@@ -15,6 +15,11 @@ float spectrumScale = 4;
 float darkness = 5.0;
 float scale = 1500;
 
+float song_minutes = 4;
+float song_seconds = 7;
+
+float timescale = ( 30 * (song_minutes * 60 + song_seconds));
+
 PFont font;
 
 void setup()
@@ -24,7 +29,7 @@ void setup()
   background(255);
 
   minim = new Minim(this);
-  player = minim.loadFile("still.mp3", 1024);
+  player = minim.loadFile("electrickery.mp3", 1024);
   
   player.loop();
 
@@ -45,7 +50,7 @@ void draw()
   pushMatrix();
   
   translate(scale/2.0,scale/2.0);
-  rotate(frameCount/12480.0*2.0*PI - PI/2.0);
+  rotate(frameCount/timescale*2.0*PI - PI/2.0);
   
   //ellipse(0,0,3,3);
   
@@ -55,7 +60,7 @@ void draw()
   //fill(255,0,0);
   
   for (int i=0; i<fft_r.specSize()/2; i++) {
-    fill(0,0,0,fft_l.getBand(i)*darkness);
+    fill(0,0,0,fft_r.getBand(i)*darkness);
     rect(i*2, 0, 2, 1);
     //line(i, 0, i, fft_r.getBand(i));
   }
@@ -72,8 +77,8 @@ void draw()
 
   popMatrix();
   
-  if (frameCount == 12480) {
-    saveFrame("final.png");
+  if (frameCount == timescale) {
+    saveFrame("electrickery.png");
   }
 
 }
