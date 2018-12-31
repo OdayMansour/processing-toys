@@ -13,10 +13,10 @@ FFT fft_l;
 
 float spectrumScale = 4;
 float darkness = 5.0;
-float scale = 1500;
+float scale = 3000;
 
 float song_minutes = 4;
-float song_seconds = 7;
+float song_seconds = 5;
 
 float timescale = ( 30 * (song_minutes * 60 + song_seconds));
 
@@ -24,12 +24,12 @@ PFont font;
 
 void setup()
 {
-  size(1500, 1500);
+  size(3000, 3000);
   frameRate(30);
   background(255);
 
   minim = new Minim(this);
-  player = minim.loadFile("electrickery.mp3", 1024);
+  player = minim.loadFile("raindrops.mp3", 2048);
   
   player.loop();
 
@@ -78,7 +78,7 @@ void draw()
   popMatrix();
   
   if (frameCount == timescale) {
-    saveFrame("electrickery.png");
+    saveFrame("raindrops.png");
   }
 
 }
