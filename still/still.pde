@@ -6,8 +6,8 @@ AudioPlayer player;
 FFT fft_r;
 FFT fft_l;
 
-float darkness = 4.0;
-float scale = 3000; // Set same as image size
+float darkness = 3.0;
+float scale = 1500; // Set same as image size
 
 // Change these according to song you're painting
 // Will be used to calculate rotation speed
@@ -15,7 +15,7 @@ float song_minutes = 4;
 float song_seconds = 7;
 
 // Number of frames needed for a full rotation
-float timescale = (30 * (song_minutes * 60 + song_seconds));
+float timescale = (15 * (song_minutes * 60 + song_seconds));
 
 PGraphics pg;
 
@@ -24,13 +24,13 @@ void setup()
   // Define canvas params
   fullScreen();
   //size(1500,1500);
-  pg = createGraphics(3000, 3000);
+  pg = createGraphics(1500, 1500);
   frameRate(30);
   background(255);
 
   // Change audio file here
   minim = new Minim(this);
-  player = minim.loadFile("../mp3/electrickery.mp3", 2048);
+  player = minim.loadFile("../mp3/electrickery.mp3", 1024);
   
   player.play();
 
@@ -103,7 +103,8 @@ void draw()
     exit();
   }
   
-  image(pg,(width-scale)/2,(height-scale)/2);//,width,height);
+   //image(pg,(width-scale)/2,(height-scale)/2);//,width,height);
+  image(pg,(width-scale)/2,0);//,width,height);
   
   if (frameCount % 30 == 0) {
     println(frameRate);
