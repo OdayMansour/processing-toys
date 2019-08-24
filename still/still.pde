@@ -6,13 +6,13 @@ AudioPlayer player;
 FFT fft_r;
 FFT fft_l;
 
-float darkness = 3.0;
-float scale = 1500; // Set same as image size
+float darkness = 6.5;
+float scale = 6000; // Set same as image size
 
 // Change these according to song you're painting
 // Will be used to calculate rotation speed
-float song_minutes = 4;
-float song_seconds = 7;
+float song_minutes = 8;
+float song_seconds = 18;
 
 // Number of frames needed for a full rotation
 float timescale = (15 * (song_minutes * 60 + song_seconds));
@@ -23,14 +23,13 @@ void setup()
 {
   // Define canvas params
   fullScreen();
-  //size(1500,1500);
-  pg = createGraphics(1500, 1500);
-  frameRate(30);
+  pg = createGraphics(6000, 6000);
+  frameRate(15);
   background(255);
 
-  // Change audio file here
+  // Change audio file here 
   minim = new Minim(this);
-  player = minim.loadFile("../mp3/electrickery.mp3", 1024);
+  player = minim.loadFile("../mp3/says.mp3", 4096);
   
   player.play();
 
@@ -74,7 +73,8 @@ void draw()
     j = i+1;
     barsize = pow((j+1)/maxj,0.7)*maxj - pow(j/maxj,0.7)*maxj; 
     
-    pg.ellipse(position, 0, barsize, 1);
+    pg.ellipse(position, 0, barsize, 2);
+    
     position = position + barsize;
   }
   
@@ -89,7 +89,7 @@ void draw()
     j = i+1;
     barsize = pow((j+1)/maxj,0.7)*maxj - pow(j/maxj,0.7)*maxj; 
     
-    pg.ellipse(position, 0, barsize, 1);
+    pg.ellipse(position, 0, barsize, 2);
     position = position + barsize;
   }
 
@@ -99,7 +99,7 @@ void draw()
   
   // Save frame once full rotation done
   if (frameCount == timescale) { 
-    pg.save("electrickery.png");
+    pg.save("says_6000_4096_15_8_x2.png");
     exit();
   }
   
@@ -110,4 +110,11 @@ void draw()
     println(frameRate);
   }
 
+}
+
+void keyPressed() {
+  if (key == 'q') {
+    pg.save("says_6000_4096_15_8_x2_inc.png");
+    exit();      
+  }
 }

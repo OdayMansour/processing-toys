@@ -6,8 +6,8 @@ AudioPlayer player;
 FFT fft_r;
 FFT fft_l;
 
-float darkness = 6.0;
-float scale = 1500; // Set same as image size
+float darkness = 0.30;
+float scale = 1200; // Set same as image size
 
 // Change these according to song you're painting
 // Will be used to calculate rotation speed
@@ -21,6 +21,7 @@ float[] avg_right = {};
 float[] avg_left = {};
 
 int averaging = 1 * 30;
+boolean saved = true;
 
 PGraphics pg;
 
@@ -28,14 +29,14 @@ void setup()
 {
   // Define canvas params
   // fullScreen();
-  size(1500,1500);
-  pg = createGraphics(1500, 1500);
+  size(1200,300,P2D);
+  pg = createGraphics(1200, 300, P2D);
   frameRate(30);
   background(255);
 
   // Change audio file here
   minim = new Minim(this);
-  player = minim.loadFile("../mp3/robots.mp3", 1024);
+  player = minim.loadFile("../mp3/distance.mp3", 1024);
   
   player.play();
 
@@ -50,8 +51,14 @@ void draw()
 {
   background(255);
   pg.beginDraw();
-  pg.background(255);
+  
+  if (saved) {
+    pg.background(255);
+    saved = false;
+  }
+
   pg.noFill();
+  pg.stroke(0);
   
   fft_r.forward( player.right );
   fft_l.forward( player.left );
@@ -60,12 +67,15 @@ void draw()
   pg.pushMatrix();
   
   // Move origin to the center of the screen
-  pg.translate(scale/2.0,scale/2.0);
+  // pg.translate(scale/2.0,scale/2.0);
+  pg.translate(scale/2.0,280);
   
   float barsize = 0;
   float position = 0;
   float j = 0;
   float maxj = fft_r.specSize()/2;
+
+  pg.beginShape();
 
   for (int i=0; i<fft_r.specSize()/2; i++) {
     // Set fill color to black, opacity proportional to amplitude at frequency band
@@ -76,17 +86,23 @@ void draw()
 
     avg_right[i] = (avg_right[i] * (averaging-1) + fft_r.getBand(i)) / averaging;
 
-    pg.stroke(0,0,0,avg_right[i]*darkness);
+    pg.stroke(0,0,0,avg_right[i]*darkness*sqrt((i+1) / 3.0));
     
     j = i+1;
     barsize = 2.0 * (pow((j+1)/maxj,0.7)*maxj - pow(j/maxj,0.7)*maxj);
     
-    pg.rect(position, 0, barsize, -avg_right[i] * sqrt((i+1) / 3.0));
+    // pg.rect(position, 0, barsize, -avg_right[i] * sqrt((i+1) / 3.0));
+    pg.vertex(position, -avg_right[i] * sqrt((i+1) / 3.0));
+
     position = position + barsize;
   }
+
+  pg.endShape();
   
   position = 0;
   
+  pg.beginShape();
+
   // Invert X axis to draw inner ring
   pg.scale(-1,1);
   
@@ -94,14 +110,18 @@ void draw()
     
     avg_left[i] = (avg_left[i] * (averaging-1) + fft_r.getBand(i)) / averaging;
 
-    pg.stroke(0,0,0,avg_left[i]*darkness);
+    pg.stroke(0,0,0,avg_left[i]*darkness*sqrt((i+1) / 3.0));
 
     j = i+1;
     barsize = 2.0 * (pow((j+1)/maxj,0.7)*maxj - pow(j/maxj,0.7)*maxj);
     
-    pg.rect(position, 0, barsize, -avg_left[i] * sqrt((i+1) / 3.0));
+    // pg.rect(position, 0, barsize, -avg_left[i] * sqrt((i+1) / 3.0));
+    pg.vertex(position, -avg_left[i] * sqrt((i+1) / 3.0));
+    
     position = position + barsize;
   }
+
+  pg.endShape();
 
   pg.popMatrix();
   pg.endDraw();
@@ -116,8 +136,10 @@ void draw()
    //image(pg,(width-scale)/2,(height-scale)/2);//,width,height);
   image(pg,(width-scale)/2,0);//,width,height);
   
-  if (frameCount % 30 == 0) {
+  if (frameCount % 150 == 0) {
     println(frameRate);
+    saveFrame();
+    saved = true;
   }
 
 }
