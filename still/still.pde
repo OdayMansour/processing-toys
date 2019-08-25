@@ -6,16 +6,16 @@ AudioPlayer player;
 FFT fft_r;
 FFT fft_l;
 
-float darkness = 6.5;
-float scale = 6000; // Set same as image size
+float darkness = 3.0;
+float scale = 3000; // Set same as image size
 
 // Change these according to song you're painting
 // Will be used to calculate rotation speed
-float song_minutes = 8;
-float song_seconds = 18;
+float song_minutes = 3;
+float song_seconds = 25;
 
 // Number of frames needed for a full rotation
-float timescale = (15 * (song_minutes * 60 + song_seconds));
+float timescale = (30 * (song_minutes * 60 + song_seconds));
 
 PGraphics pg;
 
@@ -23,13 +23,15 @@ void setup()
 {
   // Define canvas params
   fullScreen();
-  pg = createGraphics(6000, 6000);
-  frameRate(15);
-  background(255);
+  pg = createGraphics(3000, 3000);
+  frameRate(30);
+  
+  pg.beginDraw();
+  pg.background(255);
 
   // Change audio file here 
   minim = new Minim(this);
-  player = minim.loadFile("../mp3/says.mp3", 4096);
+  player = minim.loadFile("../mp3/keep.mp3", 2048);
   
   player.play();
 
@@ -39,7 +41,6 @@ void setup()
 
 void draw()
 {
-  background(255);
   pg.beginDraw();
   pg.noStroke();
   
@@ -61,9 +62,6 @@ void draw()
   float position = 0;
   float j = 0;
   float maxj = fft_r.specSize()/2;
-  
-  println("spec size = " + fft_r.specSize()/2);
-  exit();
 
   for (int i=0; i<fft_r.specSize()/2; i++) {
     // Set fill color to black, opacity proportional to amplitude at frequency band
@@ -102,12 +100,13 @@ void draw()
   
   // Save frame once full rotation done
   if (frameCount == timescale) { 
-    pg.save("says_6000_4096_15_8_x2.png");
+    pg.save("keep_3000_2048_30_1.png");
     exit();
   }
   
    //image(pg,(width-scale)/2,(height-scale)/2);//,width,height);
-  image(pg,(width-scale)/2,0);//,width,height);
+  //image(pg,(width-scale)/2,0);//,width,height);
+  image(pg,-400,-700);//,width,height);
   
   if (frameCount % 30 == 0) {
     println(frameRate);
