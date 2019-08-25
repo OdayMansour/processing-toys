@@ -61,6 +61,9 @@ void draw()
   float position = 0;
   float j = 0;
   float maxj = fft_r.specSize()/2;
+  
+  println("spec size = " + fft_r.specSize()/2);
+  exit();
 
   for (int i=0; i<fft_r.specSize()/2; i++) {
     // Set fill color to black, opacity proportional to amplitude at frequency band
