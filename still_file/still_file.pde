@@ -1,31 +1,32 @@
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
-float darkness = 8.0;
-float scale = 1500; // Set same as image size
+float darkness = 3.0;
+float scale = 3000; // Set same as image size
 
-int song_minutes = 0;
-int song_seconds = 29;
+int song_minutes = 3;
+int song_seconds = 23;
 
 // Number of frames needed for a full rotation
 int total_frames = (30 * (song_minutes * 60 + song_seconds));
 
 int count = 0;
 int timesize = 4096;
-int specsize = 4096/2 + 1;
-int datasize = total_frames * (4096+2);
+int specsize = timesize/2 + 1;
+int datasize = total_frames * (timesize+2);
 float data[] = new float[datasize];
 
 PGraphics pg;
 
 void setup()
 {
-  size(300,300);
+  size(1000,1000);
   
-  pg = createGraphics(1500, 1500);
+  pg = createGraphics((int)scale, (int)scale);
   background(255);
   frameRate(300);
-  read_from_file("/Users/oday/code/git/processing-toys/mp3/prologue.dat", data, datasize);
+  //read_from_file("/Users/oday/code/git/processing-toys/mp3/prologue.dat", data, datasize);
+  read_from_file("C:/cygwin64/home/Oday/code/git/processing-toys/mp3/si.dat", data, datasize);
   println("total frames = " + total_frames);
   pg.beginDraw();
   pg.background(255); //<>//
@@ -93,29 +94,26 @@ void draw()
     position = position + barsize;
   }
 
+  // Reset transformation matrix
   pg.popMatrix();
   pg.endDraw();
-  // Reset transformation matrix
-  // print(frameCount + " ");
   
   // Save frame once full rotation done
   if (frameCount == total_frames) { 
-    pg.save("prologue.png");
+    pg.save("si3000_5.png");
     exit();
   }
   
-  //image(pg,(width-scale)/2,(height-scale)/2);//,width,height);
-  //image(pg,(width-scale)/2,0);//,width,height);
-  
   if (frameCount % 30 == 0) {
-    println("rate=" + frameRate);
-    println("rotation=" + (float)frameCount/total_frames);
+    println("rate = " + frameRate);
+    println("progress = " + floor(100*(float)frameCount/total_frames) + "%");
     image(pg,0,0,width,height);
   }
 }
 
 void read_from_file(String filename, float[] data, int size) {
   
+  println("Reading from file...");
   try {
   FileInputStream fis = new FileInputStream(filename);
   BufferedInputStream bis = new BufferedInputStream(fis);
@@ -127,6 +125,7 @@ void read_from_file(String filename, float[] data, int size) {
     data[i] = Float.intBitsToFloat( (int)(intBytes[0] << 24 | (intBytes[1] & 0xFF) << 16 | (intBytes[2] & 0xFF) << 8 | (intBytes[3] & 0xFF)) );
   }
     bis.close();
+    println("Done reading.");
   
   } catch (Exception e) {
     println("Could not read from file");
